@@ -2,9 +2,10 @@ package priv.llf.job.client.dto;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
+import lombok.Setter;
 
 /**
- * @Author: calvin
+ * @Author: Eleven
  * @Since: 2018/3/29 22:37
  * @Description:
  */
@@ -14,7 +15,7 @@ public class UserJobExecuteResult {
     /**
      * 标记任务业务上是否执行成功
      */
-    private boolean success;
+    private String code = Code.SUCCESS.getValue();
     /**
      * 任务执行成功或失败的信息
      */
@@ -24,9 +25,33 @@ public class UserJobExecuteResult {
      */
     private JSONObject result;
 
+    public UserJobExecuteResult(String code,String message){
 
+        this.code = code;
+
+        this.message = message;
+
+    }
 
     public enum  Code{
+
+        SUCCESS("500"),
+
+        WARN("505"),
+
+        ERROR("400");
+
+        @Setter
+        private String value;
+
+        public String getValue(){
+            return this.value;
+        }
+
+        Code(String value){
+            this.value = value;
+        }
+
     }
 
 }
