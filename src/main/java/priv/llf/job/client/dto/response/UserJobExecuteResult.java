@@ -1,4 +1,4 @@
-package priv.llf.job.client.dto;
+package priv.llf.job.client.dto.response;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;

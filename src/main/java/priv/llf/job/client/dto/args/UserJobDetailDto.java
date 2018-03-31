@@ -1,4 +1,4 @@
-package priv.llf.job.client.dto;
+package priv.llf.job.client.dto.args;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;

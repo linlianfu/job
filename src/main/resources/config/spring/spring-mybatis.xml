@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!--它指定了 SQL 映射器 Mapper XML 配置文件的位置 -->
+        <property name="mapperLocations" value="classpath*:config/mybatis/mappers/*"/>
+        <!--构建sqlSessionFactory使用-->
+        <property name="configLocation" value="classpath:config/mybatis/mybatis-config.xml"/>
+    </bean>
+
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+        <constructor-arg name="executorType" value="BATCH"/>
+    </bean>
+
+    <!--扫描mybatis的model-->
+    <context:component-scan  base-package="priv.llf.quartz.model.mybatis"/>
+    <!--扫描mybatis的dao-->
+    <context:component-scan  base-package="priv.llf.quartz.dao.mybatis"/>
+</beans>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <property name="slowSqlMillis" value="3000"/>
+        <property name="logSlowSql" value="true"/>
+        <property name="mergeSql" value="true"/>
+    </bean>
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="name" value="default"/>
+        <property name="url" value="${database.url}"/>
+        <!--<property name="url" value="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;failOverReadOnly=false"/>-->
+        <property name="driverClassName" value="${database.driver}"/>
+        <property name="username" value="${database.user}"/>
+        <property name="password" value="${database.password}"/>
+        <property name="filters" value="log4j,wall"/>
+        <property name="proxyFilters">
+            <list>
+                <ref bean="stat-filter"/>
+            </list>
+        </property>
+        <property name="maxActive" value="${database.maxActive}"/>
+        <property name="initialSize" value="${database.initialSize}"/>
+        <property name="minIdle" value="${database.maxIdle}"/>
+        <property name="maxWait" value="${database.maxWait}"/>
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="30000"/>
+        <property name="validationQuery" value="SELECT 'x' FROM DUAL"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+        <!--有两个含义：-->
+        <!--1) Destroy线程会检测连接的间隔时间-->
+        <!--2)testWhileIdle的判断依据，详细看testWhileIdle属性的说明-->
+        <property name="timeBetweenEvictionRunsMillis" value="30000"/>
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxOpenPreparedStatements" value="200"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
+        <!--<property name="timeBetweenLogStatsMillis" value="300000"/>-->
+    </bean>
+</beans>

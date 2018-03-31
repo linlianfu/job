@@ -1,4 +1,4 @@
-package priv.llf.job.serve.dto;
+package priv.llf.job.serve.dto.args;
 
 import lombok.Data;
 import org.quartz.JobDataMap;

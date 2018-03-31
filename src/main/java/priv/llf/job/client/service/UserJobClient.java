@@ -1,7 +1,7 @@
 package priv.llf.job.client.service;
 
 import org.quartz.SchedulerException;
-import priv.llf.job.client.dto.UserJobDetailDto;
+import priv.llf.job.client.dto.args.UserJobDetailDto;
 
 /**
  * @Author: Eleven

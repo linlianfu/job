@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <import resource="classpath:/config/spring/spring-sys-properties.xml"/>
+    <import resource="classpath:/config/spring/spring-datasource.xml"/>
+    <import resource="classpath:/config/spring/spring-mybatis.xml"/>
+    <import resource="classpath:/config/spring/spring-asynchronous-Job.xml"/>
+    <import resource="classpath:/config/spring/spring-annotation.xml"/>
+    <!--<import resource="classpath:/config/spring/spring-redis.xml"/>-->
+    <!--<import resource="classpath:/config/spring/spring-elasticsearch.xml"/>-->
+    <!--<import resource="classpath:/config/spring/spring-mongo.xml"/>-->
+    <!--<import resource="classpath:/config/spring/spring-rocket-mq.xml"/>-->
+    <!--<import resource="classpath:/config/spring/spring_dubbo-consumer.xml"/>-->
+    <!--<bean id="cacheSupport" class="cn.llf.framework.cache.CacheSupport" init-method="initMethod">-->
+        <!--<property name="projectName" value="framework"/>-->
+    <!--</bean>-->
+
+    <!-- 启动对@AspectJ注解的支持 -->
+    <!--<aop:aspectj-autoproxy/>-->
+    <!--&lt;!&ndash;通知spring使用cglib而不是jdk的来生成代理方法 AOP可以拦截到Controller &ndash;&gt;-->
+    <aop:aspectj-autoproxy proxy-target-class="true" />
+    <!--<bean id="globalServiceLogIntercept" class="cn.llf.framework.gateway.intercept.GlobalServiceLogIntercept"/>-->
+
+    <!--全局的service层的方法调用都会被记录日志-->
+    <!--<aop:config>-->
+        <!--<aop:aspect id="class" ref="globalServiceLogIntercept">-->
+          <!--<aop:pointcut id="log" expression="execution(* cn.llf.framework.services..*.*(..))"/>-->
+          <!--<aop:before method="preHandle" pointcut-ref="log"/>-->
+          <!--<aop:after method="afterCompletion" pointcut-ref="log"/>-->
+        <!--</aop:aspect>-->
+    <!--</aop:config>-->
+</beans>
