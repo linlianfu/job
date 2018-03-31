@@ -1,7 +1,13 @@
 package priv.llf.job.serve.spring;
 
+import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.common.utils.NetUtils;
+import com.alibaba.dubbo.common.utils.StringUtils;
+import com.alibaba.dubbo.config.*;
+import com.alibaba.dubbo.rpc.protocol.dubbo.DubboProtocol;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -43,9 +49,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.Executor;
 
 /**
@@ -114,9 +118,21 @@ public class UserJobClientBean extends SchedulerAccessor implements FactoryBean<
 
     private Scheduler scheduler;
 
-    private UserSchedulerClientService schedulerClientService;
+    private UserSchedulerClientService userSchedulerClientService;
 
     private UserJobClient client;
+
+    protected ServiceConfig<UserSchedulerClientService> schedulerClientServiceConfig;
+
+    protected ApplicationConfig ac=new ApplicationConfig(UserJobConstants.applicationName);
+
+    protected ProtocolConfig protocol;
+
+    protected RegistryConfig zkRegistryConfig=new RegistryConfig();
+    @Setter
+    protected String zookeeperAddress;
+    @Setter
+    protected ProviderConfig provider;
     /**
      * Set the Quartz SchedulerFactory implementation to use.
      * <p>Default is {@link StdSchedulerFactory}, reading in the standard
@@ -420,11 +436,14 @@ public class UserJobClientBean extends SchedulerAccessor implements FactoryBean<
                 configTimeNonTransactionalDataSourceHolder.remove();
             }
         }
-
+        initProtocol();
+        initProvider();
+        initZkRegistry();
         registerListeners();
         registerJobsAndTriggers();
         initUserSchedulerClientService();////初始化客户端的调度器操作服务
         initUserJobClient();   //初始化用户的异步任务执行客户端
+        publishSchedulerClientService();// //发布客户端的调度器操作服务
         //该步骤将schedule调度器注册到spring，保证分布式系统中schedule只有一个对象，保证同步
 //        registerScheduleBean("userSchedulerClientServiceImpl",UserSchedulerClientServiceImpl.class.getName(),map);
     }
@@ -477,13 +496,83 @@ public class UserJobClientBean extends SchedulerAccessor implements FactoryBean<
         Object bean=beanFactory.createBean(UserSchedulerClientServiceImpl.class,AutowireCapableBeanFactory.AUTOWIRE_NO,false);
         UserSchedulerClientServiceImpl impl=(UserSchedulerClientServiceImpl)bean;
         impl.setScheduler(scheduler);
-        schedulerClientService=impl;
+        userSchedulerClientService =impl;
+    }
+    //发布客户端的调度器操作服务
+    protected void publishSchedulerClientService() throws SchedulerException {
+        String schedulerCluster=scheduler.getSchedulerName();
+        schedulerClientServiceConfig=new ServiceConfig<UserSchedulerClientService>();
+        schedulerClientServiceConfig.setInterface(UserSchedulerClientService.class);
+        schedulerClientServiceConfig.setApplication(ac);
+        schedulerClientServiceConfig.setProtocol(protocol);
+        schedulerClientServiceConfig.setRegistry(zkRegistryConfig);
+        schedulerClientServiceConfig.setProvider(provider);
+        schedulerClientServiceConfig.setGroup(schedulerCluster);
+        schedulerClientServiceConfig.setRef(userSchedulerClientService);
+        Map<String,String> parameters=new HashMap<String,String>();
+        parameters.put(UserJobConstants.schedulerNameKey,scheduler.getSchedulerInstanceId());
+        parameters.put(UserJobConstants.schedulerClusterKey,schedulerCluster);
+        schedulerClientServiceConfig.setParameters(parameters);
+        schedulerClientServiceConfig.export();
     }
     /**
      * 初始化执行用户异步任务的userJobClient
      */
     protected void initUserJobClient() throws Exception{
-        client=new DefaultUserJobClient(scheduler,schedulerClientService);
+        client=new DefaultUserJobClient(scheduler, userSchedulerClientService);
+    }
+    //初始化dubbo协议
+    protected void initProtocol(){
+        if(protocol==null){
+            int port= NetUtils.getAvailablePort(DubboProtocol.DEFAULT_PORT);
+            protocol=new ProtocolConfig(DubboProtocol.NAME,port);
+        }
+    }
+    //初始化zk注册中心
+    protected void initZkRegistry(){
+        Map<String,RegistryConfig> rcMap=applicationContext.getBeansOfType(RegistryConfig.class);
+        zkRegistryConfig.setProtocol(UserJobConstants.registryProtocol);
+        zkRegistryConfig.setGroup(UserJobConstants.userJobGroup);
+        if(MapUtils.isNotEmpty(rcMap)){//如果有dubbo的zk的注册中心配置直接使用
+            for(Map.Entry<String, RegistryConfig> entry:rcMap.entrySet()){
+                RegistryConfig rc=entry.getValue();
+                String protocol=rc.getProtocol();
+                String address=rc.getAddress();
+                if(UserJobConstants.registryProtocol.equalsIgnoreCase(protocol)){
+                    zkRegistryConfig.setAddress(address);
+                    break;
+                }else if(address.startsWith("zookeeper")){
+                    zkRegistryConfig.setAddress(address.substring(address.indexOf("//")+2));
+                    break;
+                }
+            }
+        }
+        if(StringUtils.isBlank(zkRegistryConfig.getAddress())){//没有dubbo的zk注册中心配置时自己根据zookeeperAddress创建RegistryConfig
+            Assert.hasText(zookeeperAddress,"zookeeperAddress为空无法向zookeeper的注册开放的服务");
+            zkRegistryConfig.setAddress(zookeeperAddress);
+        }
+        zookeeperAddress=zkRegistryConfig.getAddress();
+        String[] zkAddresses=zookeeperAddress.split(",");
+        zookeeperAddress="";
+        for(String address:zkAddresses){
+            URL url=URL.valueOf(address);
+            List<URL> backupUrls=url.getBackupUrls();
+            for(URL backupUrl:backupUrls){
+                if(StringUtils.isBlank(zookeeperAddress)){
+                    zookeeperAddress+=backupUrl.getAddress();
+                }else{
+                    zookeeperAddress+=","+backupUrl.getAddress();
+                }
+            }
+        }
+        zkRegistryConfig.setAddress(zookeeperAddress);
+    }
+    //初始化zk注册中心
+    private void initProvider(){
+        if (provider ==null){
+            provider = new ProviderConfig();
+            provider.setId("asynchronousJob_provider");
+        }
     }
     /**
      * 将初始化完成的schedule注册都spring IOC容器,供其它service注入

@@ -14,4 +14,17 @@ public class UserJobConstants {
     public static final int DEFAULT_THREAD_COUNT = 10;
 
     public static final String applicationContextKey = ApplicationContext.class.getName();
+
+    public static final String schedulerNameKey="scheduler.name";
+
+    public static final String schedulerClusterKey="scheduler.cluster";
+
+    public static final String applicationName="priv-llf-user-job";
+
+    public static final String userJobGroup="user-job";
+
+    public static final String registryProtocol="zookeeper";
+
+
+
 }
