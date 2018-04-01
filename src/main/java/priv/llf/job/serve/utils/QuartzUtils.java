@@ -20,10 +20,15 @@ public class QuartzUtils {
         String name=userJob.getName();
         String group=userJob.getGroup();
         JobDataMap map=userJob.getJobDataMap();
-        map.put(UserJobConstants.userJobKey, userJob);
+        //此处重新new一个jobDataMap是为了防止
+        //如果在userjob的jobDataMap在put本省对象的话会，
+        //在toString的时候会出现无限循环，导致堆栈溢出
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put(UserJobConstants.userJobKey, userJob);
+        jobDataMap.putAll(map);
         return JobBuilder.newJob(DefaultJobImpl.class)
                          .withIdentity(name,group)
-                         .usingJobData(map)
+                         .usingJobData(jobDataMap)
                          .requestRecovery(userJob.isRequestsRecovery())
                          .storeDurably(userJob.isDurable())
                          .build();
