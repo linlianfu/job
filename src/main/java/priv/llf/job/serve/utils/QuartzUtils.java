@@ -21,8 +21,8 @@ public class QuartzUtils {
         String group=userJob.getGroup();
         JobDataMap map=userJob.getJobDataMap();
         //此处重新new一个jobDataMap是为了防止
-        //如果在userjob的jobDataMap在put本省对象的话会，
-        //在toString的时候会出现无限循环，导致堆栈溢出
+        //如果在userJob的jobDataMap在put自己的话，
+        //会在toString()的时候会出现无限循环，导致堆栈溢出
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put(UserJobConstants.userJobKey, userJob);
         jobDataMap.putAll(map);

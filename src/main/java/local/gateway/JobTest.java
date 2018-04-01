@@ -1,6 +1,6 @@
 package local.gateway;
 
-import local.impl.QuestionExportExcuter;
+import local.impl.QuestionExportExcutor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDataMap;
 import org.quartz.SchedulerException;
@@ -26,10 +26,10 @@ public class JobTest {
     UserJobClient asynchronousJobClient;
 
     @ResponseBody
-    @RequestMapping("startJob")
-    public void startJob(){
+    @RequestMapping("exportQuestion")
+    public void export(){
         UserJobDetailDto userJobDetailDto = new UserJobDetailDto();
-        userJobDetailDto.setJobClass(QuestionExportExcuter.class);
+        userJobDetailDto.setJobClass(QuestionExportExcutor.class);
         JobDataMap map = new JobDataMap();
         map.put("group","jobTest");
         userJobDetailDto.setJobDataMap(map);
@@ -42,6 +42,5 @@ public class JobTest {
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
-        log.info("job测试启动");
     }
 }

@@ -25,6 +25,5 @@ public class UserSchedulerClientServiceImpl implements UserSchedulerClientServic
         scheduler.addJob(jobDetail,true);
         scheduler.triggerJob(jobDetail.getKey(),jobDetail.getJobDataMap());
         scheduler.start();
-        log.info("开始执行一个任务。。。。");
     }
 }

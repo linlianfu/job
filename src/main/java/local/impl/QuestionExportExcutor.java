@@ -12,7 +12,7 @@ import priv.llf.job.serve.dto.args.UserJob;
  * @Description:
  */
 @Slf4j
-public class QuestionExportExcuter implements UserJobExecutor {
+public class QuestionExportExcutor implements UserJobExecutor {
     @Override
     public UserJobExecuteResult execute(UserJob userJob, JobDataMap jobDataMap) {
         UserJobExecuteResult result = new UserJobExecuteResult();
