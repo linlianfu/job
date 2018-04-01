@@ -1,6 +1,7 @@
 package priv.llf.job.support;
 
 import org.springframework.context.ApplicationContext;
+import priv.llf.job.serve.dto.args.UserJob;
 
 /**
  * @Author: Eleven
@@ -24,6 +25,10 @@ public class UserJobConstants {
     public static final String userJobGroup="user-job";
 
     public static final String registryProtocol="zookeeper";
+
+    public static final String userJobKey= UserJob.class.getName();
+
+
 
 
 

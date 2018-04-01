@@ -21,9 +21,10 @@ public class UserSchedulerClientServiceImpl implements UserSchedulerClientServic
 
     public void addAndTriggerJob(UserJob userJob) throws SchedulerException {
 
-        JobDetail jobDetail = QuartzUtils.buildJobDetail();
-//        scheduler.addJob(jobDetail,true);
-//        scheduler.triggerJob(jobDetail.getKey(),jobDetail.getJobDataMap());
-
+        JobDetail jobDetail = QuartzUtils.buildJobDetail(userJob);
+        scheduler.addJob(jobDetail,true);
+        scheduler.triggerJob(jobDetail.getKey(),jobDetail.getJobDataMap());
+        scheduler.start();
+        log.info("开始执行一个任务。。。。");
     }
 }

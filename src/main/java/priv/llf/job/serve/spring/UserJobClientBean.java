@@ -375,36 +375,25 @@ public class UserJobClientBean extends SchedulerAccessor implements FactoryBean<
     //---------------------------------------------------------------------
 
     public void afterPropertiesSet() throws Exception {
-        if (this.dataSource == null && this.nonTransactionalDataSource != null) {
-            this.dataSource = this.nonTransactionalDataSource;
-        }
-
         if (this.applicationContext != null && this.resourceLoader == null) {
             this.resourceLoader = this.applicationContext;
         }
 
-        // Create SchedulerFactory instance...
         SchedulerFactory schedulerFactory = BeanUtils.instantiateClass(this.schedulerFactoryClass);
         initSchedulerFactory(schedulerFactory);
 
         if (this.resourceLoader != null) {
-            // Make given ResourceLoader available for SchedulerFactory configuration.
             configTimeResourceLoaderHolder.set(this.resourceLoader);
         }
         if (this.taskExecutor != null) {
-            // Make given TaskExecutor available for SchedulerFactory configuration.
             configTimeTaskExecutorHolder.set(this.taskExecutor);
         }
         if (this.dataSource != null) {
-            // Make given DataSource available for SchedulerFactory configuration.
             configTimeDataSourceHolder.set(this.dataSource);
         }
         if (this.nonTransactionalDataSource != null) {
-            // Make given non-transactional DataSource available for SchedulerFactory configuration.
             configTimeNonTransactionalDataSourceHolder.set(this.nonTransactionalDataSource);
         }
-
-        // Get Scheduler instance from SchedulerFactory.
         try {
             initScheduler();//初始化schedule
             populateSchedulerContext();
@@ -567,7 +556,7 @@ public class UserJobClientBean extends SchedulerAccessor implements FactoryBean<
         }
         zkRegistryConfig.setAddress(zookeeperAddress);
     }
-    //初始化zk注册中心
+    //初始化服务提供者
     private void initProvider(){
         if (provider ==null){
             provider = new ProviderConfig();
@@ -575,7 +564,7 @@ public class UserJobClientBean extends SchedulerAccessor implements FactoryBean<
         }
     }
     /**
-     * 将初始化完成的schedule注册都spring IOC容器,供其它service注入
+     * 将初始化完成的schedule注册到spring IOC容器,供其它service注入
      * @param beanId   注册到spring IOC的beanID，自己定义
      * @param className  待注册的bean的class name，可以直接以xxx.class.getName()获取
      * @param propertyMap  待注册的bean的属性输入值，以key-value的形式注入

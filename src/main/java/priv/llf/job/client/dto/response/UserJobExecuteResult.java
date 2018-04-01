@@ -2,6 +2,7 @@ package priv.llf.job.client.dto.response;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Setter;
  * @Description:
  */
 @Data
+@NoArgsConstructor
 public class UserJobExecuteResult {
 
     /**

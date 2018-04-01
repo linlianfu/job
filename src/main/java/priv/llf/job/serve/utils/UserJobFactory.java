@@ -1,6 +1,7 @@
 package priv.llf.job.serve.utils;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.Assert;
 import priv.llf.job.client.dto.args.UserJobDetailDto;
 import priv.llf.job.serve.dto.args.UserJob;
 
@@ -12,15 +13,15 @@ import priv.llf.job.serve.dto.args.UserJob;
 public class UserJobFactory {
 
     public static  UserJob buildUserJob(UserJobDetailDto userJodDetail, ApplicationContext applicationContext){
+        Assert.notNull(userJodDetail,"任务信息不能为空");
+        Assert.notNull(applicationContext,"上下文信息不能为空");
         UserJob  us = new UserJob();
-//        Assert.notNull(userJob,"任务信息不能为空");
-//        String name=userJob.getName();
-//        String group=userJob.getGroup();
-//        JobDataMap map=userJob.getJobDataMap();
-//        JobDataMap jobDataMap=new JobDataMap();
-//        if(!map.isEmpty()) {
-//
-//        }
+        us.setGroup(userJodDetail.getGroup());
+        us.setName(userJodDetail.getName());
+        us.setJobClassName(userJodDetail.getJobClass().getName());
+        us.setRemark(userJodDetail.getRemark());
+        us.setDescription(userJodDetail.getDescription());
+        us.setJobDataMap(userJodDetail.getJobDataMap());
         return us;
     }
 }

@@ -4,6 +4,8 @@ import lombok.Data;
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 
+import java.io.Serializable;
+
 /**
  * @Author: Eleven
  * @Since: 2018/3/29 22:18
@@ -12,7 +14,9 @@ import org.quartz.JobKey;
  * 将该model持久化到数据库
  */
 @Data
-public class UserJob {
+public class UserJob implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String id;
     /**
@@ -27,6 +31,14 @@ public class UserJob {
      * 任务marker
      */
     private String remark;
+    /**
+     *
+     */
+    private boolean durable=true;
+    /**
+     * 任务执行失败或者挂机情况下，当恢复正常时候是否重新执行任务
+     */
+    private boolean requestsRecovery;
     /**
      * 实现类，回调类
      */
