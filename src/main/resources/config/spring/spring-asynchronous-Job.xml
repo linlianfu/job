@@ -18,7 +18,7 @@
     </bean>
 
     <!--<bean id="jobDetail-llf" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">-->
-        <!--<property name="jobClass"><value>localtest.service.schedule.QuartzJobBeanTest</value></property>-->
+        <!--<property name="jobClass"><value>localtest.impl.schedule.QuartzJobBeanTest</value></property>-->
         <!--<property name="durability" value="true" />-->
         <!--&lt;!&ndash;requestsRecovery 为 true，当Quartz服务被中止后，再次启动或集群中其他机器接手任务时会尝试恢复执行之前未完成的所有任务&ndash;&gt;-->
         <!--<property name="requestsRecovery" value="true" />-->

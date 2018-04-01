@@ -9,5 +9,5 @@
 
       <!--这里只做service的IOC扫描，其他相关的扫描放到各个子模块-->
       <context:component-scan base-package="priv.llf.job.serve.impl"/>
-      <!--<context:component-scan base-package="localtest.service"/>-->
+      <!--<context:component-scan base-package="localtest.impl"/>-->
 </beans>
