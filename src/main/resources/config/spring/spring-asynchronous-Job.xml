@@ -6,7 +6,7 @@
     <bean name="asynchronousJobClient" class="priv.llf.job.serve.spring.UserJobClientBean">
     <!--<bean name="quartz-llf" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">-->
         <property name="schedulerName" value="priv.llf.job.scheduleName"/>
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="quartzDataSource"/>
         <property name="configLocation" value="classpath:config/properties/quartz.properties" />
         <property name="zookeeperAddress" value="192.168.3.19:2181" />
         <!--<property name="jobFactory" ref="jobFactory"/>-->
