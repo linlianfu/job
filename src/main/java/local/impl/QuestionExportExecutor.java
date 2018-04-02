@@ -9,14 +9,14 @@ import priv.llf.job.serve.dto.args.UserJob;
 /**
  * @Author: Eleven
  * @Since: 2018/4/1 11:42
- * @Description:
+ * @Description:  异步任务执行类，继承UserJobExecutor，执行execute方法
  */
 @Slf4j
-public class QuestionExportExcutor implements UserJobExecutor {
+public class QuestionExportExecutor implements UserJobExecutor {
     @Override
     public UserJobExecuteResult execute(UserJob userJob, JobDataMap jobDataMap) {
         UserJobExecuteResult result = new UserJobExecuteResult();
-        log.info("异步任务任务开始执行。。。。");
+        log.info("导出试题异步任务任务开始执行。。。。");
         return result;
     }
 }
