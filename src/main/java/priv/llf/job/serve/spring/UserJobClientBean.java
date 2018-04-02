@@ -55,24 +55,21 @@ import java.util.concurrent.Executor;
 /**
  * @Author: Eleven
  * @Since: 2018/3/30 21:37
- * @Description:
+ * @Description:  改造spring提供的SchedulerFactoryBean,
+ *                将初始化完成的调度器schedule通过UserSchedulerClientService暴露出去
+ *                这样才能保证调度器的唯一性
  */
 @Slf4j
 public class UserJobClientBean extends SchedulerAccessor implements FactoryBean<UserJobClient>,
         BeanNameAware, ApplicationContextAware, InitializingBean, DisposableBean, SmartLifecycle {
 
-    private static final ThreadLocal<ResourceLoader> configTimeResourceLoaderHolder =
-            new ThreadLocal<ResourceLoader>();
+    private static final ThreadLocal<ResourceLoader> configTimeResourceLoaderHolder = new ThreadLocal<ResourceLoader>();
 
-    private static final ThreadLocal<Executor> configTimeTaskExecutorHolder =
-            new ThreadLocal<Executor>();
+    private static final ThreadLocal<Executor> configTimeTaskExecutorHolder = new ThreadLocal<Executor>();
 
-    private static final ThreadLocal<DataSource> configTimeDataSourceHolder =
-            new ThreadLocal<DataSource>();
+    private static final ThreadLocal<DataSource> configTimeDataSourceHolder = new ThreadLocal<DataSource>();
 
-    private static final ThreadLocal<DataSource> configTimeNonTransactionalDataSourceHolder =
-            new ThreadLocal<DataSource>();
-
+    private static final ThreadLocal<DataSource> configTimeNonTransactionalDataSourceHolder = new ThreadLocal<DataSource>();
 
     private Class<? extends SchedulerFactory> schedulerFactoryClass = StdSchedulerFactory.class;
 
@@ -87,18 +84,16 @@ public class UserJobClientBean extends SchedulerAccessor implements FactoryBean<
      */
     @Setter
     protected String name;
+
     private Executor taskExecutor;
 
     private DataSource dataSource;
 
     private DataSource nonTransactionalDataSource;
 
-
     private Map<String, ?> schedulerContextMap;
 
     private ApplicationContext applicationContext;
-
-    private String applicationContextSchedulerContextKey;
 
     private JobFactory jobFactory;
 
@@ -248,26 +243,6 @@ public class UserJobClientBean extends SchedulerAccessor implements FactoryBean<
      */
     public void setSchedulerContextAsMap(Map<String, ?> schedulerContextAsMap) {
         this.schedulerContextMap = schedulerContextAsMap;
-    }
-
-    /**
-     * Set the key of an ApplicationContext reference to expose in the
-     * SchedulerContext, for example "applicationContext". Default is none.
-     * Only applicable when running in a Spring ApplicationContext.
-     * <p>Note: When using persistent Jobs whose JobDetail will be kept in the
-     * database, do not put an ApplicationContext reference into the JobDataMap
-     * but rather into the SchedulerContext.
-     * <p>In case of a QuartzJobBean, the reference will be applied to the Job
-     * instance as bean property. An "applicationContext" attribute will
-     * correspond to a "setApplicationContext" method in that scenario.
-     * <p>Note that BeanFactory callback interfaces like ApplicationContextAware
-     * are not automatically applied to Quartz Job instances, because Quartz
-     * itself is responsible for the lifecycle of its Jobs.
-     * @see JobDetailFactoryBean#setApplicationContextJobDataKey
-     * @see org.springframework.context.ApplicationContext
-     */
-    public void setApplicationContextSchedulerContextKey(String applicationContextSchedulerContextKey) {
-        this.applicationContextSchedulerContextKey = applicationContextSchedulerContextKey;
     }
 
     /**
