@@ -1,5 +1,6 @@
 package priv.llf.job.serve.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 import priv.llf.job.client.dto.args.UserJobDetailDto;
@@ -10,6 +11,7 @@ import priv.llf.job.serve.dto.args.UserJob;
  * @Since: 2018/3/29 23:21
  * @Description:
  */
+@Slf4j
 public class UserJobFactory {
 
     public static  UserJob buildUserJob(UserJobDetailDto userJodDetail, ApplicationContext applicationContext){

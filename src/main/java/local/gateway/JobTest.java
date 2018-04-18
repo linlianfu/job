@@ -1,6 +1,5 @@
 package local.gateway;
 
-import local.impl.QuestionExportExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDataMap;
 import org.quartz.SchedulerException;
@@ -29,14 +28,14 @@ public class JobTest {
     @RequestMapping("exportQuestion")
     public void export(){
         UserJobDetailDto userJobDetailDto = new UserJobDetailDto();
-        userJobDetailDto.setJobClass(QuestionExportExecutor.class);
+//        userJobDetailDto.setJobClass(QuestionExportExecutor.class);
         JobDataMap map = new JobDataMap();
         map.put("group","jobTest");
         userJobDetailDto.setJobDataMap(map);
-        userJobDetailDto.setName("导出试题");
-        userJobDetailDto.setGroup("questionExport");
-        userJobDetailDto.setDescription("测试阶段");
-        userJobDetailDto.setRemark("remark");
+//        userJobDetailDto.setName("导出试题");
+//        userJobDetailDto.setGroup("questionExport");
+//        userJobDetailDto.setDescription("测试阶段");
+//        userJobDetailDto.setRemark("remark");
         try {
             asynchronousJobClient.execute(userJobDetailDto);
         } catch (SchedulerException e) {
