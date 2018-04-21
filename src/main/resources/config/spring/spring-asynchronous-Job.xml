@@ -4,30 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean name="asynchronousJobClient" class="priv.llf.job.serve.spring.UserJobClientBean">
-    <!--<bean name="quartz-llf" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">-->
         <property name="schedulerName" value="priv.llf.job.scheduleName"/>
         <property name="dataSource" ref="quartzDataSource"/>
         <property name="configLocation" value="classpath:config/properties/quartz.properties" />
-        <property name="zookeeperAddress" value="192.168.3.19:2181" />
-        <!--<property name="jobFactory" ref="jobFactory"/>-->
-        <!--<property name="triggers">-->
-            <!--<list>-->
-                <!--<ref bean="trigger-llf-ten-second" />-->
-            <!--</list>-->
-        <!--</property>-->
+        <property name="zookeeperAddress" value="${zookeeperAddress}" />
     </bean>
-
-    <!--<bean id="jobDetail-llf" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">-->
-        <!--<property name="jobClass"><value>localtest.impl.schedule.QuartzJobBeanTest</value></property>-->
-        <!--<property name="durability" value="true" />-->
-        <!--&lt;!&ndash;requestsRecovery 为 true，当Quartz服务被中止后，再次启动或集群中其他机器接手任务时会尝试恢复执行之前未完成的所有任务&ndash;&gt;-->
-        <!--<property name="requestsRecovery" value="true" />-->
-    <!--</bean>-->
-    <!--<bean id="trigger-llf-ten-second" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
-        <!--<property name="jobDetail" ref="jobDetail-llf" />-->
-        <!--<property name="cronExpression" value="0/30 * * * * ?" />-->
-    <!--</bean>-->
-    <!--自定义生成job的工厂-->
-    <!--<bean id="jobFactory" class="priv.llf.quartz.JobFactory"></bean>-->
-
 </beans>
